@@ -75,14 +75,14 @@ public class Main {
 
     public static void main(String[] args) {
         connectDB();
-        add_all_types();
+        //delete_type(65);
         disconnectDB();
     }
 
     public static void insert_type(String type) {
         try {
-            System.out.println("Добавлен тип кошки: " + type);
             statement.execute("INSERT into types (type) values ('" + type + "')");
+            System.out.println("Добавлен тип кошки: " + type);
         } catch (SQLException e) {
             e.printStackTrace(); // обработка ошибок SQL
             System.out.println("Ошибка SQL!");
@@ -119,7 +119,26 @@ public class Main {
         for (int i = 0; i < types.length; i++) {
             insert_type(types[i]);
         }
+    }
 
+    public static void delete_type(int id) {
+        try {
+            statement.execute("delete from types where id=" + id);
+            System.out.println("Тип кошки с id: " + id + " удалён");
+        } catch (SQLException e) {
+            e.printStackTrace(); // обработка ошибок SQL
+            System.out.println("Ошибка SQL!");
+        }
+    }
+
+    public static void update_type(int id, String new_type) {
+        try {
+            statement.execute("update types set type='" + new_type + "' where id=" + id);
+            System.out.println("Тип кошки с id: " + id + " изменён. Новое значение: " + new_type);
+        } catch (SQLException e) {
+            e.printStackTrace(); // обработка ошибок SQL
+            System.out.println("Ошибка SQL!");
+        }
     }
 }
 
