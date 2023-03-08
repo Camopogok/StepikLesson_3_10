@@ -73,9 +73,15 @@ public class Main {
 
     public static void main(String[] args) {
         connectDB();
-        get_type(4);
-        get_type_where("id<5");
-        get_all_types();
+
+        try {
+            statement.execute("create table if not exists cats (id integer primary key unique, name varchar(20) not null, type_id integer not null, age integer not null, weight double, foreign key (type_id) references types(id))");
+            System.out.println("Добавлена таблица кошек");
+        } catch (SQLException e) {
+            e.printStackTrace(); // обработка ошибок SQL
+            System.out.println("Ошибка SQL!");
+        }
+
         disconnectDB();
     }
 
