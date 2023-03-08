@@ -1,7 +1,4 @@
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 public class Main {
 
@@ -10,6 +7,7 @@ public class Main {
     public static final String DB_Driver = "org.sqlite.JDBC";
     public static Connection connection;
     public static Statement statement;
+    public static ResultSet resultSet;
     static String[] types = new String[]{"Абиссинская кошка",
             "Австралийский мист",
             "Американская жесткошерстная",
@@ -75,7 +73,9 @@ public class Main {
 
     public static void main(String[] args) {
         connectDB();
-        //delete_type(65);
+        get_type(4);
+        get_type_where("id<5");
+        get_all_types();
         disconnectDB();
     }
 
@@ -135,6 +135,44 @@ public class Main {
         try {
             statement.execute("update types set type='" + new_type + "' where id=" + id);
             System.out.println("Тип кошки с id: " + id + " изменён. Новое значение: " + new_type);
+        } catch (SQLException e) {
+            e.printStackTrace(); // обработка ошибок SQL
+            System.out.println("Ошибка SQL!");
+        }
+    }
+
+    public static String get_type(int id) {
+        try {
+            resultSet = statement.executeQuery("select type from types where id=" + id);
+            System.out.println("Тип кошки с id: " + id + " - " + resultSet.getString("type"));
+            return resultSet.getString("type");
+        } catch (SQLException e) {
+            e.printStackTrace(); // обработка ошибок SQL
+            System.out.println("Ошибка SQL!");
+        }
+        return null;
+    }
+
+    public static void get_type_where(String where) {
+        try {
+            resultSet = statement.executeQuery("select * from types where " + where);
+            System.out.println("Под условия запроса попадают следующие породы:");
+            while (resultSet.next()) {
+                System.out.println("   - " + resultSet.getString("type"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace(); // обработка ошибок SQL
+            System.out.println("Ошибка SQL!");
+        }
+    }
+
+    public static void get_all_types() {
+        try {
+            resultSet = statement.executeQuery("select * from types");
+            System.out.println("В базе данных содержатся следующие породы:");
+            while (resultSet.next()) {
+                System.out.println("   - " + resultSet.getString("type"));
+            }
         } catch (SQLException e) {
             e.printStackTrace(); // обработка ошибок SQL
             System.out.println("Ошибка SQL!");
