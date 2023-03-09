@@ -194,7 +194,9 @@ public class Main {
     public static void main(String[] args) {
         connectDB();
 
-        update_cat("type_id='8'", "id=2");
+        System.out.println(get_cat(1));
+        get_cat_where("id<4");
+        get_all_cats();
 
         disconnectDB();
     }
@@ -371,6 +373,44 @@ public class Main {
         try {
             statement.execute("update cats set " + set + " where " + where);
             System.out.println("Кошки, удовлетворяющая условиям: " + where + " изменены. Новые значения: " + set);
+        } catch (SQLException e) {
+            e.printStackTrace(); // обработка ошибок SQL
+            System.out.println("Ошибка SQL!");
+        }
+    }
+
+    public static String get_cat(int id) {
+        try {
+            resultSet = statement.executeQuery("select * from cats where id=" + id);
+            System.out.println("Кошка с id: " + id + " - " + resultSet.getString("name"));
+            return resultSet.getString("name");
+        } catch (SQLException e) {
+            e.printStackTrace(); // обработка ошибок SQL
+            System.out.println("Ошибка SQL!");
+        }
+        return null;
+    }
+
+    public static void get_cat_where(String where) {
+        try {
+            resultSet = statement.executeQuery("select * from cats where " + where);
+            System.out.println("Под условия запроса попадают следующие кошки:");
+            while (resultSet.next()) {
+                System.out.println("   - " + resultSet.getString("name") + ", id: " + resultSet.getInt("id"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace(); // обработка ошибок SQL
+            System.out.println("Ошибка SQL!");
+        }
+    }
+
+    public static void get_all_cats() {
+        try {
+            resultSet = statement.executeQuery("select * from cats");
+            System.out.println("В базе данных содержатся следующие кошки:");
+            while (resultSet.next()) {
+                System.out.println("   - " + resultSet.getString("name") + ", id: " + resultSet.getInt("id"));
+            }
         } catch (SQLException e) {
             e.printStackTrace(); // обработка ошибок SQL
             System.out.println("Ошибка SQL!");
