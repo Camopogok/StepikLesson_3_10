@@ -74,14 +74,9 @@ public class Main {
     public static void main(String[] args) {
         connectDB();
 
-        try {
-            statement.execute("create table if not exists cats (id integer primary key unique, name varchar(20) not null, type_id integer not null, age integer not null, weight double, foreign key (type_id) references types(id))");
-            System.out.println("Добавлена таблица кошек");
-        } catch (SQLException e) {
-            e.printStackTrace(); // обработка ошибок SQL
-            System.out.println("Ошибка SQL!");
-        }
-
+        insert_cat("Барсик", "Сибиряк", 2, 3.4);
+        insert_cat("Мурзик", "Мейн-ку́н", 3, 5.8);
+        insert_cat("Брысь", "Корат", 1, 2.7);
         disconnectDB();
     }
 
@@ -183,6 +178,38 @@ public class Main {
             e.printStackTrace(); // обработка ошибок SQL
             System.out.println("Ошибка SQL!");
         }
+    }
+
+    public static void insert_cat(String name, String type, int age, Double weight) {
+        Integer type_id = checkType(type);
+        if (type_id == null) {
+            insert_type(type);
+            type_id = checkType(type);
+        }
+        try {
+            statement.execute("INSERT into cats (name, type_id, age, weight) values ('" + name + "', " + type_id + ", " + age + ", " + weight + ")");
+            System.out.println("Добавлена кошка: " + name + ", " + type_id + ", " + age + ", " + weight);
+        } catch (SQLException e) {
+            e.printStackTrace(); // обработка ошибок SQL
+            System.out.println("Ошибка SQL!");
+        }
+    }
+
+    public static Integer checkType (String type) {
+        try {
+            resultSet = statement.executeQuery("select * from types where type = '" + type + "'");
+            if (resultSet.next()) {
+                System.out.println("Порода есть в БД");
+                return resultSet.getInt("id");
+            } else {
+                System.out.println("Породы нет в БД");
+                return null;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace(); // обработка ошибок SQL
+            System.out.println("Ошибка SQL!");
+        }
+        return null;
     }
 }
 
