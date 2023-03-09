@@ -194,7 +194,7 @@ public class Main {
     public static void main(String[] args) {
         connectDB();
 
-        add_more_cats(40);
+        update_cat("type_id='8'", "id=2");
 
         disconnectDB();
     }
@@ -344,6 +344,36 @@ public class Main {
         for (int i = 0; i < n; i++) {
             Cat cat = randomCat();
             insert_cat(cat.name, cat.type, cat.age, cat.weight);
+        }
+    }
+
+    public static void delete_cat(int id) {
+        try {
+            statement.execute("delete from cats where id=" + id);
+            System.out.println("Кошка с id: " + id + " удалена");
+        } catch (SQLException e) {
+            e.printStackTrace(); // обработка ошибок SQL
+            System.out.println("Ошибка SQL!");
+        }
+    }
+
+    public static void delete_cat(String where) {
+        try {
+            statement.execute("delete from cats where " + where);
+            System.out.println("Удалены все кошки удовлетворяющие условиям: " + where);
+        } catch (SQLException e) {
+            e.printStackTrace(); // обработка ошибок SQL
+            System.out.println("Ошибка SQL!");
+        }
+    }
+
+    public static void update_cat(String set, String where) {
+        try {
+            statement.execute("update cats set " + set + " where " + where);
+            System.out.println("Кошки, удовлетворяющая условиям: " + where + " изменены. Новые значения: " + set);
+        } catch (SQLException e) {
+            e.printStackTrace(); // обработка ошибок SQL
+            System.out.println("Ошибка SQL!");
         }
     }
 }
